@@ -5,6 +5,8 @@ import authRouter from "./src/routes/auth.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import userRouter from "./src/routes/user.route.js";
+import websiteRouter from "./src/routes/website.route.js";
+
 
 dotenv.config();
 
@@ -30,6 +32,7 @@ dbConnect();
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/website", websiteRouter);
 
 // Server
 const port = process.env.PORT || 8000;
