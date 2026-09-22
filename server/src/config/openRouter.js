@@ -9,7 +9,9 @@ const openRouterUrl = "https://openrouter.ai/api/v1/chat/completions";
 // Priority order me Gemini ke models
 const GEMINI_MODELS = [
   "gemini-3.5-flash-lite", // Primary (Fast & high limits)
-  "gemini-3.6-flash",      // Latest standard
+  "gemini-3.1-flash-lite",    // Latest standard
+  "gemini-3.5-flash",
+  "gemini-3.6-flash",
   "gemini-2.0-flash",      // Reliable fallback
   "gemini-flash-latest",   // Auto-routed alias
 ];
@@ -142,9 +144,11 @@ const generateResponse = async (prompt) => {
 
   // --- Step 2: Fallback across OpenRouter Models ---
   const fallbackModels = [
-    "deepseek/deepseek-chat",
-    "mistralai/mistral-7b-instruct:free",
     "cohere/north-mini-code:free",
+    "poolside/laguna-s-2.1:free",
+    "deepseek/deepseek-chat",
+    "inclusionai/ling-3.0-flash-fin:free",
+    "mistralai/mistral-7b-instruct:free",
   ];
 
   for (const model of fallbackModels) {
