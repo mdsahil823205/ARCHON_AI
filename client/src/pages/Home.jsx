@@ -11,6 +11,8 @@ import {
   LayoutDashboard,
   LogOut,
   ChevronDown,
+  Plus,
+  PackagePlus,
 } from "lucide-react";
 import LoginModal from "../components/LoginModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -99,6 +101,7 @@ const Home = () => {
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Pricing */}
             <button
+              onClick={() => navigate("/pricing")}
               type="button"
               className="hidden cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-white/[0.04] hover:text-white sm:block"
             >
@@ -107,9 +110,10 @@ const Home = () => {
 
             {/* Credits */}
             {userData && (
-              <div className="hidden items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm font-medium text-gray-300 md:flex">
+              <div className="hidden cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm font-medium text-gray-300 md:flex"
+                onClick={() => navigate("/pricing")}>
                 <Coins size={15} className="text-gray-400" />
-                <span>{userData.credits}</span>
+                <span >{userData.credits}</span>
               </div>
             )}
 
@@ -145,9 +149,8 @@ const Home = () => {
 
                   <ChevronDown
                     size={15}
-                    className={`mr-1 hidden text-gray-500 transition-transform duration-200 sm:block ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
+                    className={`mr-1 hidden text-gray-500 transition-transform duration-200 sm:block ${isOpen ? "rotate-180" : ""
+                      }`}
                   />
                 </motion.button>
 
@@ -202,7 +205,7 @@ const Home = () => {
                       {/* Credits - Mobile */}
                       <div className="p-3 md:hidden">
                         <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2" onClick={() => navigate("/pricing")}>
                             <Coins size={15} className="text-gray-400" />
 
                             <span className="text-xs text-gray-400">
@@ -229,7 +232,17 @@ const Home = () => {
                           <LayoutDashboard size={16} />
                           Dashboard
                         </button>
-
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsOpen(false);
+                            navigate("/generate");
+                          }}
+                          className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-gray-300 transition-colors hover:bg-white/[0.05] hover:text-white"
+                        >
+                          <PackagePlus size={16} />
+                          Generate
+                        </button>
                         <button
                           type="button"
                           onClick={handleLogout}

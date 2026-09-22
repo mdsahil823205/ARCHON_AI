@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 
 import EditorPage from "./pages/editor/EditorPage"
 import LiveSite from "./pages/LiveSite"
+import Pricing from "./pages/Pricing"
 
 export const serverUrl = 'http://localhost:3000'
 
@@ -22,6 +23,7 @@ function App() {
         <Route path='/generate' element={userData ? <Generate /> : <Home />} />
         <Route path='/editor/:id' element={userData ? <EditorPage /> : <Home />} />
         <Route path="/site/:slug" element={<LiveSite />} />
+        <Route path="/pricing" element={<Pricing />} />
       </Routes>
     </BrowserRouter>
   )

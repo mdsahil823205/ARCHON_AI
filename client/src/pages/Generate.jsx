@@ -1,9 +1,24 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Sparkles, WandSparkles, AlertCircle } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  ArrowLeft,
+  Sparkles,
+  WandSparkles,
+  AlertCircle,
+  Coins,
+  ChevronDown,
+  LayoutDashboard,
+  CreditCard,
+  LogOut,
+} from "lucide-react";
 import axios from "axios";
+
 import { serverUrl } from "../App";
+import LoginModal from "../components/LoginModal";
+import { setUserData } from "../redux/userSlice";
+
 
 const Generate = () => {
   const thinkingSteps = [
@@ -31,6 +46,9 @@ const Generate = () => {
   ];
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { userData } = useSelector((state) => state.userDetails);
 
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,9 +56,14 @@ const Generate = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+
   // ---------------------------------------------------------
   // Smooth simulated progress while API is generating
   // ---------------------------------------------------------
+
   useEffect(() => {
     if (!loading) return;
 
@@ -66,14 +89,16 @@ const Generate = () => {
 
         return Math.min(prev + increment, 95);
       });
-    },700);
+    }, 700);
 
     return () => clearInterval(interval);
   }, [loading]);
 
+
   // ---------------------------------------------------------
   // Change AI thinking message gradually
   // ---------------------------------------------------------
+
   useEffect(() => {
     if (!loading) return;
 
@@ -90,11 +115,43 @@ const Generate = () => {
     return () => clearInterval(interval);
   }, [loading, thinkingSteps.length]);
 
+
+  // ---------------------------------------------------------
+  // Logout
+  // ---------------------------------------------------------
+
+  const handleLogout = async () => {
+    try {
+      await axios.get(`${serverUrl}/api/auth/logout`, {
+        withCredentials: true,
+      });
+
+      dispatch(setUserData(null));
+      setIsProfileOpen(false);
+      navigate("/");
+    } catch (error) {
+      console.log("Logout error:", error);
+    }
+  };
+
+
   // ---------------------------------------------------------
   // Generate website
   // ---------------------------------------------------------
+
   const handleGenerateWebsite = async () => {
     if (loading) return;
+
+    if (!userData) {
+      setIsLoginOpen(true);
+      return;
+    }
+
+    if (!prompt.trim()) {
+      setErrorMessage("Please describe the website you want to create.");
+      return;
+    }
+
     try {
       setLoading(true);
       setErrorMessage("");
@@ -102,56 +159,45 @@ const Generate = () => {
       setCurrentStep(0);
 
       const result = await axios.post(
-        `${serverUrl}/api/website/generate`, { prompt },
+        `${serverUrl}/api/website/generate`,
+        {
+          prompt: prompt.trim(),
+        },
         {
           withCredentials: true,
-        },
+        }
       );
 
       console.log("Website generation response:", result);
 
-      // Your actual API response:
-      // result.data.website._id
       const websiteId = result?.data?.website?._id;
 
       if (!websiteId) {
         throw new Error(
-          "Website was generated, but the website ID was not received.",
+          "Website was generated, but the website ID was not received."
         );
       }
 
-      // API successfully completed.
-      // Go directly to editor with generated website ID.
       navigate(`/editor/${websiteId}`);
     } catch (error) {
       console.error("Website generation error:", error);
 
-      let message = "Something went wrong while generating your website.";
+      let message =
+        "Something went wrong while generating your website.";
 
-      // Axios error
       if (axios.isAxiosError(error)) {
-        // Server responded with an error
         if (error.response) {
           message =
             error.response.data?.message ||
             error.response.data?.error ||
             `Request failed with status ${error.response.status}.`;
-        }
-
-        // Request was sent but server did not respond
-        else if (error.request) {
+        } else if (error.request) {
           message =
             "Unable to connect to the server. Please check your connection and try again.";
-        }
-
-        // Something went wrong while creating request
-        else {
+        } else {
           message = error.message || message;
         }
-      }
-
-      // Normal JavaScript error
-      else if (error instanceof Error) {
+      } else if (error instanceof Error) {
         message = error.message;
       }
 
@@ -163,53 +209,282 @@ const Generate = () => {
     }
   };
 
+
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-[#0a0a0a] text-white">
+
       {/* =====================================================
           HEADER
       ====================================================== */}
-      <header className="border-b border-white/[0.08] bg-[#0a0a0a]">
-        <div className="mx-auto flex min-h-16 w-full max-w-6xl items-center justify-between px-4 sm:min-h-[68px] sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            {/* Back Button */}
+
+      <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#0a0a0a]/95 backdrop-blur-xl">
+        <div className="mx-auto flex min-h-16 w-full max-w-7xl items-center justify-between px-4 sm:min-h-[68px] sm:px-6 lg:px-8">
+
+          {/* LEFT */}
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+
             <button
               type="button"
               onClick={() => navigate("/")}
               disabled={loading}
-              className="group flex h-9 cursor-pointer items-center gap-2 rounded-lg px-2.5 text-sm text-gray-400 transition-colors hover:bg-white/[0.05] hover:text-white disabled:pointer-events-none disabled:opacity-50"
+              className="group flex h-9 shrink-0 cursor-pointer items-center gap-2 rounded-lg px-2.5 text-sm text-gray-400 transition-colors hover:bg-white/[0.05] hover:text-white disabled:pointer-events-none disabled:opacity-50"
             >
               <ArrowLeft
                 size={17}
                 className="transition-transform duration-200 group-hover:-translate-x-0.5"
               />
 
-              <span>Back</span>
+              <span className="hidden sm:inline">
+                Back
+              </span>
             </button>
 
-            <div className="h-5 w-px bg-white/10" />
+            <div className="hidden h-5 w-px bg-white/10 sm:block" />
 
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white text-black">
+            {/* LOGO */}
+            <div className="flex min-w-0 items-center gap-2">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-black">
                 <Sparkles size={14} />
               </div>
 
-              <h1 className="text-sm font-semibold tracking-tight sm:text-base">
+              <h1 className="truncate text-sm font-semibold tracking-tight sm:text-base">
                 WebGen
               </h1>
             </div>
           </div>
+
+
+          {/* RIGHT */}
+          <div className="relative flex items-center gap-2 sm:gap-3">
+
+            {/* Desktop Credits */}
+            {userData && (
+              <button
+                type="button"
+                onClick={() => navigate("/pricing")}
+                className="hidden h-9 cursor-pointer items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 text-xs text-gray-300 transition-all hover:border-white/15 hover:bg-white/[0.06] hover:text-white md:flex"
+              >
+                <Coins
+                  size={14}
+                  className="text-gray-400"
+                />
+
+                <span>
+                  Credits
+                </span>
+
+                <span className="rounded-md bg-white/[0.06] px-2 py-0.5 font-medium text-white">
+                  {userData?.credits ?? 0}
+                </span>
+              </button>
+            )}
+
+
+            {/* Profile */}
+            {userData ? (
+              <button
+                type="button"
+                onClick={() =>
+                  setIsProfileOpen((prev) => !prev)
+                }
+                className="flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-1.5 pr-2 transition-all hover:border-white/15 hover:bg-white/[0.06] sm:gap-2"
+              >
+                <img
+                  src={
+                    userData.avatar ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      userData.name || "User"
+                    )}&background=random&color=fff`
+                  }
+                  alt={userData.name || "User"}
+                  className="h-7 w-7 rounded-md object-cover sm:h-8 sm:w-8"
+                />
+
+                <span className="hidden max-w-24 truncate text-xs font-medium text-gray-300 lg:block">
+                  {userData.name || "User"}
+                </span>
+
+                <ChevronDown
+                  size={14}
+                  className={`hidden text-gray-500 transition-transform lg:block ${
+                    isProfileOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsLoginOpen(true)}
+                className="flex h-9 cursor-pointer items-center rounded-lg bg-white px-3.5 text-xs font-medium text-black transition-colors hover:bg-gray-200 sm:px-4"
+              >
+                Login
+              </button>
+            )}
+
+
+            {/* PROFILE DROPDOWN */}
+            <AnimatePresence>
+              {userData && isProfileOpen && (
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    y: -6,
+                    scale: 0.98,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: -6,
+                    scale: 0.98,
+                  }}
+                  transition={{
+                    duration: 0.16,
+                  }}
+                  className="absolute right-0 top-full z-50 mt-2 w-[calc(100vw-2rem)] max-w-72 overflow-hidden rounded-xl border border-white/[0.08] bg-[#111111] shadow-2xl shadow-black/40"
+                >
+
+                  {/* USER INFO */}
+                  <div className="border-b border-white/[0.07] p-3.5">
+                    <div className="flex items-center gap-3">
+
+                      <img
+                        src={
+                          userData.avatar ||
+                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            userData.name || "User"
+                          )}&background=random&color=fff`
+                        }
+                        alt={userData.name || "User"}
+                        className="h-10 w-10 rounded-lg object-cover"
+                      />
+
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-white">
+                          {userData.name || "User"}
+                        </p>
+
+                        <p className="truncate text-xs text-gray-500">
+                          {userData.email || "WebGen User"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  {/* MOBILE CREDITS */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      navigate("/pricing");
+                    }}
+                    className="flex w-full items-center justify-between border-b border-white/[0.07] px-3.5 py-3 text-left transition-colors hover:bg-white/[0.04] md:hidden"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.05]">
+                        <Coins
+                          size={15}
+                          className="text-gray-300"
+                        />
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium text-gray-300">
+                          Credits
+                        </p>
+
+                        <p className="text-[11px] text-gray-600">
+                          Available credits
+                        </p>
+                      </div>
+                    </div>
+
+                    <span className="rounded-md bg-white/[0.07] px-2 py-1 text-xs font-medium text-white">
+                      {userData?.credits ?? 0}
+                    </span>
+                  </button>
+
+
+                  {/* DASHBOARD */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      navigate("/dashboard");
+                    }}
+                    className="flex w-full cursor-pointer items-center gap-3 px-3.5 py-3 text-left text-sm text-gray-400 transition-colors hover:bg-white/[0.04] hover:text-white"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.05]">
+                      <LayoutDashboard size={15} />
+                    </div>
+
+                    <span>
+                      Dashboard
+                    </span>
+                  </button>
+
+
+                  {/* PRICING */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      navigate("/pricing");
+                    }}
+                    className="flex w-full cursor-pointer items-center gap-3 px-3.5 py-3 text-left text-sm text-gray-400 transition-colors hover:bg-white/[0.04] hover:text-white"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.05]">
+                      <CreditCard size={15} />
+                    </div>
+
+                    <span>
+                      Pricing
+                    </span>
+                  </button>
+
+
+                  {/* LOGOUT */}
+                  <div className="border-t border-white/[0.07] p-1.5">
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-gray-400 transition-colors hover:bg-red-500/[0.07] hover:text-red-300"
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/[0.06]">
+                        <LogOut size={15} />
+                      </div>
+
+                      <span>
+                        Logout
+                      </span>
+                    </button>
+                  </div>
+
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+          </div>
         </div>
       </header>
+
 
       {/* =====================================================
           MAIN
       ====================================================== */}
+
       <main className="flex min-h-[calc(100vh-64px)] flex-col">
+
         <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center px-4 py-12 sm:px-6 sm:py-16 md:py-20">
+
           {/* =================================================
               HEADING
           ================================================== */}
+
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -221,7 +496,6 @@ const Generate = () => {
           >
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-gray-400">
               <Sparkles size={13} />
-
               <span>AI Website Builder</span>
             </div>
 
@@ -235,9 +509,11 @@ const Generate = () => {
             </p>
           </motion.div>
 
+
           {/* =================================================
               GENERATOR CARD
           ================================================== */}
+
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -248,21 +524,26 @@ const Generate = () => {
             }}
             className="mt-10 w-full max-w-3xl sm:mt-12"
           >
-            {/* Section title */}
+
             <div className="mb-3 flex items-center gap-2">
-              <WandSparkles size={17} className="text-gray-400" />
+              <WandSparkles
+                size={17}
+                className="text-gray-400"
+              />
 
               <h2 className="text-sm font-medium text-gray-200">
                 Describe your website
               </h2>
             </div>
 
-            {/* Main Input Card */}
+
+            {/* MAIN INPUT CARD */}
             <div className="rounded-xl border border-white/10 bg-[#111111] p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] sm:p-3">
+
               {/* =================================================
                   PROGRESS BAR
-                  Shows above textarea
               ================================================== */}
+
               <AnimatePresence>
                 {loading && (
                   <motion.div
@@ -288,9 +569,11 @@ const Generate = () => {
                     className="overflow-hidden"
                   >
                     <div className="mb-3 rounded-lg border border-white/[0.07] bg-[#0a0a0a] px-3.5 py-3 sm:px-4">
-                      {/* Progress Header */}
+
                       <div className="mb-2.5 flex items-center justify-between gap-3">
+
                         <div className="flex min-w-0 items-center gap-2.5">
+
                           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white/[0.06]">
                             <Sparkles
                               size={14}
@@ -334,6 +617,7 @@ const Generate = () => {
                         </span>
                       </div>
 
+
                       {/* Progress Track */}
                       <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
                         <motion.div
@@ -347,14 +631,17 @@ const Generate = () => {
                           }}
                         />
                       </div>
+
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
+
               {/* =================================================
                   ERROR MESSAGE
               ================================================== */}
+
               <AnimatePresence>
                 {!loading && errorMessage && (
                   <motion.div
@@ -379,8 +666,12 @@ const Generate = () => {
                     className="overflow-hidden"
                   >
                     <div className="mb-3 flex items-start gap-3 rounded-lg border border-red-500/15 bg-red-500/[0.05] px-3.5 py-3">
+
                       <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-red-500/10">
-                        <AlertCircle size={14} className="text-red-400" />
+                        <AlertCircle
+                          size={14}
+                          className="text-red-400"
+                        />
                       </div>
 
                       <div className="min-w-0">
@@ -392,14 +683,17 @@ const Generate = () => {
                           {errorMessage}
                         </p>
                       </div>
+
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
+
               {/* =================================================
                   TEXTAREA
               ================================================== */}
+
               <textarea
                 value={prompt}
                 onChange={(e) => {
@@ -414,10 +708,13 @@ const Generate = () => {
                 className="min-h-44 w-full resize-none rounded-lg border border-white/[0.08] bg-[#0a0a0a] px-4 py-3.5 text-sm leading-6 text-white outline-none transition-colors placeholder:text-gray-600 focus:border-white/20 disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-52 sm:px-5 sm:py-4 sm:text-base"
               />
 
+
               {/* =================================================
                   BOTTOM CONTROLS
               ================================================== */}
+
               <div className="flex flex-col gap-3 px-1 pt-3 sm:flex-row sm:items-center sm:justify-between">
+
                 <p className="hidden text-xs text-gray-600 sm:block">
                   Be as specific as possible for better results.
                 </p>
@@ -427,33 +724,50 @@ const Generate = () => {
                   onClick={handleGenerateWebsite}
                   disabled={!prompt.trim() || loading}
                   whileHover={{
-                    scale: !prompt.trim() || loading ? 1 : 1.01,
+                    scale:
+                      !prompt.trim() || loading
+                        ? 1
+                        : 1.01,
                   }}
                   whileTap={{
-                    scale: !prompt.trim() || loading ? 1 : 0.98,
+                    scale:
+                      !prompt.trim() || loading
+                        ? 1
+                        : 0.98,
                   }}
                   className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-medium text-black transition-all duration-200 hover:bg-gray-200 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-gray-600 sm:w-auto"
                 >
                   <Sparkles
                     size={16}
-                    className={loading ? "animate-pulse" : ""}
+                    className={
+                      loading
+                        ? "animate-pulse"
+                        : ""
+                    }
                   />
 
-                  {loading ? "Generating..." : "Generate Website"}
+                  {loading
+                    ? "Generating..."
+                    : "Generate Website"}
                 </motion.button>
+
               </div>
             </div>
+
 
             {/* Small info */}
             <p className="mt-3 px-1 text-xs text-gray-600">
               Generation may take a few moments depending on the complexity of
               your website.
             </p>
+
           </motion.div>
+
 
           {/* =================================================
               EXAMPLE PROMPTS
           ================================================== */}
+
           {!loading && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -485,8 +799,20 @@ const Generate = () => {
               </div>
             </motion.div>
           )}
+
         </div>
       </main>
+
+
+      {/* =====================================================
+          LOGIN MODAL
+      ====================================================== */}
+
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+      />
+
     </div>
   );
 };
