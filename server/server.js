@@ -27,7 +27,7 @@ app.use(cookieParser());
 // CORS
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://web-gen-ai-two.vercel.app/",
     credentials: true,
   })
 );
