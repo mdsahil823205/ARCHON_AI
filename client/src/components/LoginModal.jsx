@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { FcGoogle } from "react-icons/fc";
-import { X, ShieldCheck } from "lucide-react";
+import { X, ShieldCheck, Loader2 } from "lucide-react";
 import { auth, googleProvider } from "../utils/FirebaseAuth";
 import { signInWithPopup } from "firebase/auth";
 import axios from "axios";
@@ -10,9 +10,16 @@ import { useDispatch } from "react-redux";
 import { setUserData } from "../redux/userSlice";
 
 const LoginModal = ({ open, onClose }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
+
   const googleAuthentication = async () => {
+    if (loading) return;
+
     try {
+      setLoading(true);
+
       const result = await signInWithPopup(auth, googleProvider);
 
       const user = result.user;
@@ -35,6 +42,8 @@ const LoginModal = ({ open, onClose }) => {
       }
     } catch (error) {
       console.log("Google authentication error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,7 +69,8 @@ const LoginModal = ({ open, onClose }) => {
             {/* Close */}
             <button
               onClick={onClose}
-              className="absolute right-4 top-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-[var(--text-faint)] transition hover:bg-[var(--hover-bg-strong)] hover:text-[var(--text-primary)]"
+              disabled={loading}
+              className="absolute right-4 top-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-[var(--text-faint)] transition hover:bg-[var(--hover-bg-strong)] hover:text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               <X size={18} />
             </button>
@@ -99,13 +109,23 @@ const LoginModal = ({ open, onClose }) => {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={!loading ? { scale: 1.01 } : {}}
+              whileTap={!loading ? { scale: 0.98 } : {}}
               onClick={googleAuthentication}
-              className="mt-7 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-[var(--btn-primary-bg)] px-4 py-3 text-sm font-medium text-[var(--btn-primary-text)] transition hover:bg-[var(--btn-primary-hover)]"
+              disabled={loading}
+              className="mt-7 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-[var(--btn-primary-bg)] px-4 py-3 text-sm font-medium text-[var(--btn-primary-text)] transition hover:bg-[var(--btn-primary-hover)] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              <FcGoogle size={20} />
-              Continue with Google
+              {loading ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <FcGoogle size={20} />
+                  Continue with Google
+                </>
+              )}
             </motion.button>
 
             {/* Security */}
