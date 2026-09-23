@@ -1,9 +1,163 @@
 @import "tailwindcss";
 
-/* Premium scrollbar */
+/* =====================================================
+   THEME — CSS Custom Property Color System
+   ====================================================== */
+
+:root {
+  /* Surfaces */
+  --bg-primary: #f7f7f5;
+  --bg-secondary: #f7f7f5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-elevated: #f8fafc;
+  --bg-input: #f4f4f5;
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+  --bg-glow-opacity: 0;
+
+  /* Text */
+  --text-primary: #09090b;
+  --text-secondary: #3f3f46;
+  --text-muted: #343438;
+  --text-faint: #121217;
+  --text-faint2: #cf350b;
+  --text-heading-accent: #c37230;
+
+  /* Borders */
+  --border-primary: #e4e4e7;
+  --border-subtle: #f4f4f5;
+  --border-hover: #d4d4d8;
+
+  /* Interactive */
+  --hover-bg: rgba(0, 0, 0, 0.03);
+  --hover-bg-strong: rgba(0, 0, 0, 0.06);
+
+  /* Buttons */
+  --btn-primary-bg: #17171de7;
+  --btn-primary-text: #ffffff;
+  --btn-primary-hover: #27272a;
+  --btn-secondary-bg: #f4f4f5;
+  --btn-secondary-text: #09090b;
+  --btn-chat-bg: #02022ae7;
+
+  /* Cards */
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* Dropdown */
+  --dropdown-bg: #ffffff;
+  --dropdown-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+
+  /* Badge */
+  --badge-bg: #f4f4f5;
+  --badge-border: #e4e4e7;
+  --badge-text: #52525b;
+
+  /* Logo icon */
+  --logo-bg: #09090b;
+  --logo-text: #ffffff;
+
+  /* Skeleton */
+  --skeleton-bg: #e4e4e7;
+  --skeleton-shine: #f4f4f5;
+
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(0, 0, 0, 0.18);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.35);
+
+  /* Progress bar */
+  --progress-bg: #e4e4e7;
+  --progress-fill: #09090b;
+
+  /* Misc */
+  --divider: #e4e4e7;
+}
+
+html.dark {
+  /* Surfaces */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #09090b;
+  --bg-card: #111111;
+  --bg-card-hover: #141414;
+  --bg-elevated: #111216;
+  --bg-input: #0a0a0a;
+  --bg-overlay: rgba(0, 0, 0, 0.9);
+  --bg-glow-opacity: 1;
+  --btn-chat-bg: rgb(222, 219, 219);
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-faint: #52525b;
+  --text-heading-accent: #9ca3af;
+
+  /* Borders */
+  --border-primary: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-hover: rgba(255, 255, 255, 0.15);
+
+  /* Interactive */
+  --hover-bg: rgba(255, 255, 255, 0.04);
+  --hover-bg-strong: rgba(255, 255, 255, 0.06);
+
+  /* Buttons */
+  --btn-primary-bg: #ffffff;
+  --btn-primary-text: #000000;
+  --btn-primary-hover: #e5e5e5;
+  --btn-secondary-bg: rgba(255, 255, 255, 0.04);
+  --btn-secondary-text: #ffffff;
+
+  /* Cards */
+  --card-shadow: 0 0 0 transparent;
+  --card-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+  /* Dropdown */
+  --dropdown-bg: #111111;
+  --dropdown-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+
+  /* Badge */
+  --badge-bg: rgba(255, 255, 255, 0.03);
+  --badge-border: rgba(255, 255, 255, 0.1);
+  --badge-text: #9ca3af;
+
+  /* Logo icon */
+  --logo-bg: #ffffff;
+  --logo-text: #000000;
+
+  /* Skeleton */
+  --skeleton-bg: rgba(255, 255, 255, 0.07);
+  --skeleton-shine: #18191d;
+
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.38);
+
+  /* Progress bar */
+  --progress-bg: rgba(255, 255, 255, 0.06);
+  --progress-fill: #ffffff;
+
+  /* Misc */
+  --divider: rgba(255, 255, 255, 0.08);
+}
+
+/* =====================================================
+   GLOBAL TRANSITIONS
+   ====================================================== */
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* =====================================================
+   PREMIUM SCROLLBAR
+   ====================================================== */
+
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -15,11 +169,11 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--scrollbar-thumb);
   border-radius: 999px;
   transition: background 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.38);
+  background: var(--scrollbar-thumb-hover);
 }

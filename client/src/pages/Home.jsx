@@ -15,6 +15,7 @@ import {
   PackagePlus,
 } from "lucide-react";
 import LoginModal from "../components/LoginModal";
+import ThemeToggle from "../components/ThemeToggle";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { serverUrl } from "../App";
@@ -68,7 +69,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-[#0a0a0a] text-white">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
       {/* =====================================================
           HEADER
       ====================================================== */}
@@ -79,7 +80,7 @@ const Home = () => {
           duration: 0.4,
           ease: "easeOut",
         }}
-        className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#0a0a0a]"
+        className="sticky top-0 z-50 border-b border-[var(--border-primary)] bg-[var(--bg-primary)]"
       >
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:h-[68px] sm:px-6 lg:px-8">
           {/* Logo */}
@@ -88,7 +89,7 @@ const Home = () => {
             onClick={() => navigate("/")}
             className="flex cursor-pointer items-center gap-2"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white text-black">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--logo-bg)] text-[var(--logo-text)]">
               <Sparkles size={14} />
             </div>
 
@@ -103,16 +104,19 @@ const Home = () => {
             <button
               onClick={() => navigate("/pricing")}
               type="button"
-              className="hidden cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-white/[0.04] hover:text-white sm:block"
+              className="hidden cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-muted)] transition-colors hover:bg-[var(--hover-bg)] hover:text-[var(--text-primary)] sm:block"
             >
               Pricing
             </button>
 
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* Credits */}
             {userData && (
-              <div className="hidden cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm font-medium text-gray-300 md:flex"
+              <div className="hidden cursor-pointer items-center gap-2 rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg)] px-3 py-2 text-sm font-medium text-[var(--text-secondary)] md:flex"
                 onClick={() => navigate("/pricing")}>
-                <Coins size={15} className="text-gray-400" />
+                <Coins size={15} className="text-[var(--text-muted)]" />
                 <span >{userData.credits}</span>
               </div>
             )}
@@ -123,7 +127,7 @@ const Home = () => {
                 type="button"
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setOpenLogin(true)}
-                className="cursor-pointer rounded-lg bg-white px-4 py-2 text-xs font-semibold text-black transition-colors hover:bg-gray-200 sm:px-5 sm:py-2.5 sm:text-sm"
+                className="cursor-pointer rounded-lg bg-[var(--btn-primary-bg)] px-4 py-2 text-xs font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] sm:px-5 sm:py-2.5 sm:text-sm"
               >
                 Login
               </motion.button>
@@ -134,7 +138,7 @@ const Home = () => {
                   type="button"
                   whileTap={{ scale: 0.96 }}
                   onClick={() => setIsOpen((prev) => !prev)}
-                  className="flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] p-1 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                  className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg)] p-1 transition-colors hover:border-[var(--border-hover)] hover:bg-[var(--hover-bg-strong)]"
                 >
                   <img
                     src={
@@ -149,7 +153,7 @@ const Home = () => {
 
                   <ChevronDown
                     size={15}
-                    className={`mr-1 hidden text-gray-500 transition-transform duration-200 sm:block ${isOpen ? "rotate-180" : ""
+                    className={`mr-1 hidden text-[var(--text-faint)] transition-transform duration-200 sm:block ${isOpen ? "rotate-180" : ""
                       }`}
                   />
                 </motion.button>
@@ -174,10 +178,11 @@ const Home = () => {
                         scale: 0.97,
                       }}
                       transition={{ duration: 0.16 }}
-                      className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl border border-white/10 bg-[#111111] shadow-2xl shadow-black/40"
+                      className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl border border-[var(--border-primary)] bg-[var(--dropdown-bg)] shadow-2xl"
+                      style={{ boxShadow: "var(--dropdown-shadow)" }}
                     >
                       {/* User Info */}
-                      <div className="border-b border-white/[0.08] p-4">
+                      <div className="border-b border-[var(--divider)] p-4">
                         <div className="flex items-center gap-3">
                           <img
                             src={
@@ -191,11 +196,11 @@ const Home = () => {
                           />
 
                           <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-white">
+                            <p className="truncate text-sm font-semibold text-[var(--text-primary)]">
                               {userData.name}
                             </p>
 
-                            <p className="truncate text-xs text-gray-500">
+                            <p className="truncate text-xs text-[var(--text-faint)]">
                               {userData.email}
                             </p>
                           </div>
@@ -204,30 +209,30 @@ const Home = () => {
 
                       {/* Credits - Mobile */}
                       <div className="p-3 md:hidden">
-                        <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
+                        <div className="flex items-center justify-between rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg)] px-3 py-2.5">
                           <div className="flex items-center gap-2" onClick={() => navigate("/pricing")}>
-                            <Coins size={15} className="text-gray-400" />
+                            <Coins size={15} className="text-[var(--text-muted)]" />
 
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-[var(--text-muted)]">
                               Available Credits
                             </span>
                           </div>
 
-                          <span className="text-sm font-semibold text-white">
+                          <span className="text-sm font-semibold text-[var(--text-primary)]">
                             {userData.credits}
                           </span>
                         </div>
                       </div>
 
                       {/* Actions */}
-                      <div className="border-t border-white/[0.08] p-2">
+                      <div className="border-t border-[var(--divider)] p-2">
                         <button
                           type="button"
                           onClick={() => {
                             setIsOpen(false);
                             navigate("/dashboard");
                           }}
-                          className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-gray-300 transition-colors hover:bg-white/[0.05] hover:text-white"
+                          className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--hover-bg-strong)] hover:text-[var(--text-primary)]"
                         >
                           <LayoutDashboard size={16} />
                           Dashboard
@@ -238,7 +243,7 @@ const Home = () => {
                             setIsOpen(false);
                             navigate("/generate");
                           }}
-                          className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-gray-300 transition-colors hover:bg-white/[0.05] hover:text-white"
+                          className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--hover-bg-strong)] hover:text-[var(--text-primary)]"
                         >
                           <PackagePlus size={16} />
                           Generate
@@ -246,7 +251,7 @@ const Home = () => {
                         <button
                           type="button"
                           onClick={handleLogout}
-                          className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-gray-400 transition-colors hover:bg-white/[0.05] hover:text-white"
+                          className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-[var(--text-muted)] transition-colors hover:bg-[var(--hover-bg-strong)] hover:text-[var(--text-primary)]"
                         >
                           <LogOut size={16} />
                           Logout
@@ -273,7 +278,7 @@ const Home = () => {
             transition={{
               duration: 0.4,
             }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-2 text-xs text-gray-400 sm:text-sm"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--badge-border)] bg-[var(--badge-bg)] px-3.5 py-2 text-xs text-[var(--badge-text)] sm:text-sm"
           >
             <Sparkles size={14} />
             Build websites with AI
@@ -287,10 +292,10 @@ const Home = () => {
               delay: 0.08,
               duration: 0.5,
             }}
-            className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
+            className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--text-primary)] sm:text-5xl md:text-6xl lg:text-7xl"
           >
             Build websites
-            <span className="block text-gray-400">
+            <span className="block text-[var(--text-heading-accent)]">
               with AI
             </span>
           </motion.h1>
@@ -303,7 +308,7 @@ const Home = () => {
               delay: 0.16,
               duration: 0.5,
             }}
-            className="mt-6 max-w-2xl text-sm leading-6 text-gray-500 sm:text-base sm:leading-7 md:text-lg"
+            className="mt-6 max-w-2xl text-sm leading-6 text-[var(--text-muted)] sm:text-base sm:leading-7 md:text-lg"
           >
             Describe your idea and let WebGen create a modern,
             responsive website with the features you need.
@@ -321,7 +326,7 @@ const Home = () => {
               }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate("/dashboard")}
-              className="group mt-8 flex cursor-pointer items-center gap-2 rounded-lg bg-white px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-gray-200 sm:px-7 sm:py-3.5 sm:text-base"
+              className="group mt-8 flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--btn-primary-bg)] px-6 py-3 text-sm font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] sm:px-7 sm:py-3.5 sm:text-base"
             >
               Go To Dashboard
 
@@ -341,7 +346,7 @@ const Home = () => {
               }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setOpenLogin(true)}
-              className="group mt-8 flex cursor-pointer items-center gap-2 rounded-lg bg-white px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-gray-200 sm:px-7 sm:py-3.5 sm:text-base"
+              className="group mt-8 flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--btn-primary-bg)] px-6 py-3 text-sm font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] sm:px-7 sm:py-3.5 sm:text-base"
             >
               Get Started
 
@@ -378,19 +383,20 @@ const Home = () => {
                 whileHover={{
                   y: -3,
                 }}
-                className="group rounded-xl border border-white/[0.08] bg-[#111111] p-5 transition-colors duration-200 hover:border-white/[0.15] hover:bg-[#141414] sm:p-6"
+                className="group rounded-xl border border-[var(--border-primary)] bg-[var(--bg-card)] p-5 transition-colors duration-200 hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)] sm:p-6"
+                style={{ boxShadow: "var(--card-shadow)" }}
               >
                 {/* Icon */}
-                <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-gray-400 transition-colors duration-200 group-hover:bg-white/[0.06] group-hover:text-white">
+                <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg)] text-[var(--text-muted)] transition-colors duration-200 group-hover:bg-[var(--hover-bg-strong)] group-hover:text-[var(--text-primary)]">
                   <Icon size={19} />
                 </div>
 
                 {/* Content */}
-                <h2 className="text-base font-semibold tracking-tight text-white sm:text-lg">
+                <h2 className="text-base font-semibold tracking-tight text-[var(--text-primary)] sm:text-lg">
                   {card.title}
                 </h2>
 
-                <p className="mt-2.5 text-sm leading-6 text-gray-500">
+                <p className="mt-2.5 text-sm leading-6 text-[var(--text-muted)]">
                   {card.description}
                 </p>
               </motion.div>
@@ -402,7 +408,7 @@ const Home = () => {
       {/* =====================================================
           FOOTER
       ====================================================== */}
-      <footer className="border-t border-white/[0.08] px-5 py-6 text-center text-xs text-gray-600">
+      <footer className="border-t border-[var(--border-primary)] px-5 py-6 text-center text-xs text-[var(--text-faint)]">
         © {new Date().getFullYear()} WebGen AI. All rights reserved.
       </footer>
 

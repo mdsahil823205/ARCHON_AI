@@ -67,28 +67,28 @@ const LiveSite = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#09090b] px-4">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-secondary)] px-4">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
           className="flex flex-col items-center"
         >
-          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] shadow-xl shadow-black/20">
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--border-primary)] bg-[var(--hover-bg)] shadow-xl">
             <div className="absolute inset-0 rounded-2xl bg-blue-500/10 blur-xl" />
 
             <Loader2 className="relative h-6 w-6 animate-spin text-blue-400" />
           </div>
 
-          <p className="mt-5 text-sm font-medium text-white">
+          <p className="mt-5 text-sm font-medium text-[var(--text-primary)]">
             Loading website
           </p>
 
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-[var(--text-muted)]">
             Preparing your live experience...
           </p>
 
-          <div className="mt-5 h-1 w-40 overflow-hidden rounded-full bg-white/10">
+          <div className="mt-5 h-1 w-40 overflow-hidden rounded-full bg-[var(--progress-bg)]">
             <motion.div
               className="h-full rounded-full bg-blue-500"
               initial={{ x: "-100%" }}
@@ -111,29 +111,30 @@ const LiveSite = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#09090b] px-4">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-secondary)] px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.96, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111216] p-7 text-center shadow-2xl shadow-black/40"
+          className="w-full max-w-md rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-elevated)] p-7 text-center"
+          style={{ boxShadow: "var(--dropdown-shadow)" }}
         >
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/10">
             <AlertCircle className="h-6 w-6 text-red-400" />
           </div>
 
-          <h1 className="mt-5 text-lg font-semibold text-white">
+          <h1 className="mt-5 text-lg font-semibold text-[var(--text-primary)]">
             Website unavailable
           </h1>
 
-          <p className="mt-2 text-sm leading-6 text-zinc-400">
+          <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
             {error}
           </p>
 
           <div className="mt-6 flex items-center justify-center gap-3">
             <button
               onClick={handleGetWebsite}
-              className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg-strong)] px-4 py-2.5 text-sm font-medium text-[var(--text-primary)] transition hover:bg-[var(--hover-bg)] active:scale-[0.98]"
             >
               <RefreshCw className="h-4 w-4" />
               Try again
@@ -141,7 +142,7 @@ const LiveSite = () => {
 
             <button
               onClick={() => window.history.back()}
-              className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2.5 text-sm font-medium text-zinc-400 transition hover:bg-white/[0.05] hover:text-white active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-lg border border-[var(--border-primary)] px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] transition hover:bg-[var(--hover-bg)] hover:text-[var(--text-primary)] active:scale-[0.98]"
             >
               <ArrowLeft className="h-4 w-4" />
               Go back

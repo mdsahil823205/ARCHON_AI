@@ -47,7 +47,7 @@ const LoginModal = ({ open, onClose }) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={onClose}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 px-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-overlay)] px-4 backdrop-blur-sm"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 15 }}
@@ -55,12 +55,12 @@ const LoginModal = ({ open, onClose }) => {
             exit={{ opacity: 0, scale: 0.96, y: 15 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-sm rounded-2xl border border-white/10 bg-zinc-950 p-6 shadow-2xl sm:p-8"
+            className="relative w-full max-w-sm rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-card)] p-6 shadow-2xl sm:p-8"
           >
             {/* Close */}
             <button
               onClick={onClose}
-              className="absolute right-4 top-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-gray-500 transition hover:bg-white/5 hover:text-white"
+              className="absolute right-4 top-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-[var(--text-faint)] transition hover:bg-[var(--hover-bg-strong)] hover:text-[var(--text-primary)]"
             >
               <X size={18} />
             </button>
@@ -72,7 +72,7 @@ const LoginModal = ({ open, onClose }) => {
               transition={{ delay: 0.1 }}
               className="flex justify-center"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-lg font-bold text-black">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--logo-bg)] text-lg font-bold text-[var(--logo-text)]">
                 W
               </div>
             </motion.div>
@@ -84,12 +84,12 @@ const LoginModal = ({ open, onClose }) => {
               transition={{ delay: 0.15 }}
               className="mt-5 text-center"
             >
-              <h1 className="text-2xl font-semibold tracking-tight text-white">
+              <h1 className="text-2xl font-semibold tracking-tight text-[var(--text-primary)]">
                 Welcome to{" "}
                 <span className="text-violet-400">webGenAI</span>
               </h1>
 
-              <p className="mt-2 text-sm leading-6 text-gray-500">
+              <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
                 Create beautiful websites with the power of AI.
               </p>
             </motion.div>
@@ -102,7 +102,7 @@ const LoginModal = ({ open, onClose }) => {
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
               onClick={googleAuthentication}
-              className="mt-7 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-white px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+              className="mt-7 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-[var(--btn-primary-bg)] px-4 py-3 text-sm font-medium text-[var(--btn-primary-text)] transition hover:bg-[var(--btn-primary-hover)]"
             >
               <FcGoogle size={20} />
               Continue with Google
@@ -113,7 +113,7 @@ const LoginModal = ({ open, onClose }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="mt-5 flex items-center justify-center gap-1.5 text-xs text-gray-600"
+              className="mt-5 flex items-center justify-center gap-1.5 text-xs text-[var(--text-faint)]"
             >
               <ShieldCheck size={14} />
               Secure authentication
@@ -124,14 +124,14 @@ const LoginModal = ({ open, onClose }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35 }}
-              className="mt-5 text-center text-[11px] leading-5 text-gray-600"
+              className="mt-5 text-center text-[11px] leading-5 text-[var(--text-faint)]"
             >
               By continuing, you agree to our{" "}
-              <span className="cursor-pointer text-gray-400 hover:text-white">
+              <span className="cursor-pointer text-[var(--text-muted)] hover:text-[var(--text-primary)]">
                 Terms of Service
               </span>{" "}
               and{" "}
-              <span className="cursor-pointer text-gray-400 hover:text-white">
+              <span className="cursor-pointer text-[var(--text-muted)] hover:text-[var(--text-primary)]">
                 Privacy Policy
               </span>
               .
