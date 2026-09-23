@@ -10,7 +10,9 @@ import EditorPage from "./pages/editor/EditorPage"
 import LiveSite from "./pages/LiveSite"
 import Pricing from "./pages/Pricing"
 
-export const serverUrl = 'https://web-gen-ai-two.vercel.app/'
+export const serverUrl = import.meta.env.DEV
+  ? "http://localhost:3000"
+  : "";
 
 function App() {
     const { userData } = useSelector((state) => state.userDetails);
