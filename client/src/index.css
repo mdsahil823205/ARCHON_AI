@@ -21,7 +21,8 @@
   --text-muted: #343438;
   --text-faint: #121217;
   --text-faint2: #cf350b;
-  --text-heading-accent: #c37230;
+  --text-heading-accent: #2e5adc;
+  --text-main-heading:#2e5adc;
 
   /* Borders */
   --border-primary: #e4e4e7;
@@ -90,7 +91,8 @@ html.dark {
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
   --text-faint: #52525b;
-  --text-heading-accent: #9ca3af;
+  --text-heading-accent: #d1762c;
+  --text-main-heading: #d1762c;
 
   /* Borders */
   --border-primary: rgba(255, 255, 255, 0.08);

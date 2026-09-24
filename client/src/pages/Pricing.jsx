@@ -66,7 +66,7 @@ const Pricing = () => {
                 "Custom domain",
                 "Advanced AI features",
                 "Priority support",
-                "Remove WebGen branding",
+                "Remove Archon Ai branding",
             ],
             popular: true,
             button: "Upgrade to Pro",
@@ -177,7 +177,7 @@ const Pricing = () => {
                             </div>
 
                             <span className="text-sm font-semibold tracking-tight">
-                                WebGen
+                                Archon Ai
                             </span>
                         </div>
                     </div>
@@ -524,7 +524,7 @@ const Pricing = () => {
 
                 <div className="mx-auto max-w-6xl px-4 pb-16 text-center sm:px-6 lg:px-8">
                     <p className="text-xs text-[var(--text-faint)]">
-                        All plans include access to WebGen AI. Upgrade whenever
+                        All plans include access to Archon Ai. Upgrade whenever
                         you need more credits and features.
                     </p>
                 </div>

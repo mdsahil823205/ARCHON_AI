@@ -94,7 +94,7 @@ const Home = () => {
             </div>
 
             <h2 className="text-base font-semibold tracking-tight sm:text-lg">
-              WebGen
+              Archon <span className="bg-gradient-to-r from-[var(--text-main-heading)] via-[var(--text-main-heading)] to-zinc-500 bg-clip-text text-transparent">Ai</span>
             </h2>
           </button>
 
@@ -295,9 +295,7 @@ const Home = () => {
             className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--text-primary)] sm:text-5xl md:text-6xl lg:text-7xl"
           >
             Build websites
-            <span className="block text-[var(--text-heading-accent)]">
-              with AI
-            </span>
+            <span className="block bg-gradient-to-r from-[var(--text-main-heading)] via-[var(--text-main-heading)] to-zinc-500 bg-clip-text text-transparent">with AI</span>
           </motion.h1>
 
           {/* Description */}
@@ -310,7 +308,7 @@ const Home = () => {
             }}
             className="mt-6 max-w-2xl text-sm leading-6 text-[var(--text-muted)] sm:text-base sm:leading-7 md:text-lg"
           >
-            Describe your idea and let WebGen create a modern,
+            Describe your idea and let ArchonAi create a modern,
             responsive website with the features you need.
           </motion.p>
 
@@ -409,7 +407,7 @@ const Home = () => {
           FOOTER
       ====================================================== */}
       <footer className="border-t border-[var(--border-primary)] px-5 py-6 text-center text-xs text-[var(--text-faint)]">
-        © {new Date().getFullYear()} WebGen AI. All rights reserved.
+        © {new Date().getFullYear()} Archon Ai. All rights reserved.
       </footer>
 
       {/* =====================================================

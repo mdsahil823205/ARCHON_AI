@@ -261,7 +261,7 @@ const Generate = () => {
                             </div>
 
                             <h1 className="truncate text-sm font-semibold tracking-tight sm:text-base">
-                                WebGen
+                                Archon Ai
                             </h1>
                         </div>
                     </div>
@@ -384,7 +384,7 @@ const Generate = () => {
                                                 </p>
 
                                                 <p className="truncate text-xs text-[var(--text-faint)]">
-                                                    {userData.email || "WebGen User"}
+                                                    {userData.email || "Archon Ai User"}
                                                 </p>
                                             </div>
                                         </div>
@@ -520,7 +520,7 @@ const Generate = () => {
                         </h1>
 
                         <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
-                            Describe what you want to build and let WebGen create the website
+                            Describe what you want to build and let Archon Ai create the website
                             for you.
                         </p>
                     </motion.div>

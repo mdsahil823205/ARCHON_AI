@@ -27,7 +27,7 @@ app.use(cookieParser());
 // CORS
 app.use(
   cors({
-    origin: "https://web-gen-ai-two.vercel.app/",
+    origin: "https://archonaibuilder.vercel.app",
     credentials: true,
   })
 );
