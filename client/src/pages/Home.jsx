@@ -89,8 +89,12 @@ const Home = () => {
             onClick={() => navigate("/")}
             className="flex cursor-pointer items-center gap-2"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--logo-bg)] text-[var(--logo-text)]">
-              <Sparkles size={14} />
+            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-md bg-[var(--logo-bg)] p-1">
+              <img
+                src="/favicon.svg"
+                alt="Archon AI Logo"
+                className="h-full w-full object-contain"
+              />
             </div>
 
             <h2 className="text-base font-semibold tracking-tight sm:text-lg">

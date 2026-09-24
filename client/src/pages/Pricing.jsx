@@ -172,8 +172,12 @@ const Pricing = () => {
                         <div className="hidden h-5 w-px bg-[var(--border-primary)] sm:block" />
 
                         <div className="hidden items-center gap-2 sm:flex">
-                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--logo-bg)] text-[var(--logo-text)]">
-                                <Sparkles size={14} />
+                            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-md bg-[var(--logo-bg)] p-0.5">
+                                <img
+                                    src="/favicon.svg"
+                                    alt="Archon AI Logo"
+                                    className="h-full w-full object-contain"
+                                />
                             </div>
 
                             <span className="text-sm font-semibold tracking-tight">
