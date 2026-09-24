@@ -11,8 +11,8 @@ import LiveSite from "./pages/LiveSite"
 import Pricing from "./pages/Pricing"
 
 export const serverUrl = import.meta.env.DEV
-  ? "http://localhost:3000"
-  : "";
+    ? "http://localhost:3000"
+    : "https://archonaibuilder.vercel.app";
 
 function App() {
     const { userData } = useSelector((state) => state.userDetails);
