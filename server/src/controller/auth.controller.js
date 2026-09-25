@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
+import redis from "../config/redis.js";
 
 export const googleAuth = async (req, res) => {
   try {
@@ -16,6 +17,9 @@ export const googleAuth = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
+
+    // Redis mein instant cache set karo
+    await redis.set(`user:${user._id}`, user, { ex: 7 * 24 * 60 * 60 });
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -36,6 +40,18 @@ export const googleAuth = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
+    const token = req.cookies.token;
+
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // Redis se session clear karo
+        await redis.del(`user:${decoded.id}`);
+      } catch (err) {
+        // Token expired/invalid ignore
+      }
+    }
+
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,
@@ -47,10 +63,6 @@ export const logout = async (req, res) => {
       message: "Logged out successfully",
     });
   } catch (error) {
-    console.error("Logout error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    });
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
