@@ -2,6 +2,7 @@ import generateResponse from "../config/openRouter.js";
 import User from "../models/userModel.js";
 import Website from "../models/website.model.js";
 import extractJson from "../utils/extractJson.js";
+import redis from "../config/redis.js";
 
 export const masterPrompt = `
 YOU ARE A PRINCIPAL FRONTEND ARCHITECT AND SENIOR UI/UX ENGINEER.
@@ -65,7 +66,6 @@ export const generateWebsite = async (req, res) => {
     let raw = "";
     let parsed = null;
 
-    // 2 attempts with prompt reinforcement
     for (let i = 0; i < 2; i++) {
       raw = await generateResponse(
         i === 0
@@ -106,6 +106,9 @@ export const generateWebsite = async (req, res) => {
     user.credits -= 50;
     await user.save();
 
+    // 🟢 REDIS: User credits update ho gaye, isliye user cache update/delete karein
+    await redis.del(`user:${user._id}`);
+
     return res.status(200).json({
       success: true,
       website,
@@ -120,7 +123,7 @@ export const generateWebsite = async (req, res) => {
   }
 };
 
-// 2. Get Website By ID
+// 2. Get Website By ID (No Redis needed here)
 export const getWebsiteById = async (req, res) => {
   try {
     const website = await Website.findOne({
@@ -148,7 +151,7 @@ export const getWebsiteById = async (req, res) => {
   }
 };
 
-// 3. Website Changes / Editor Chat Controller
+// 3. Website Changes
 export const wesbsiteChanges = async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -246,6 +249,15 @@ CRITICAL RULES:
     user.credits -= 25;
     await user.save();
 
+    // 🟢 REDIS:
+    // 1. User cache invalidate karein (credits change hue hain)
+    await redis.del(`user:${user._id}`);
+
+    // 2. Agar site deployed thi, toh live site ka cache bhi invalidate karein
+    if (website.slug) {
+      await redis.del(`site:${website.slug}`);
+    }
+
     return res.status(200).json({
       success: true,
       message: parsed.message,
@@ -261,7 +273,7 @@ CRITICAL RULES:
   }
 };
 
-// 4. Get All Websites
+// 4. Get All Websites (No Redis needed)
 export const getAllWebsite = async (req, res) => {
   try {
     const websites = await Website.find({
@@ -281,7 +293,7 @@ export const getAllWebsite = async (req, res) => {
   }
 };
 
-// 5. Deploy Website
+// 5. Deploy Controller
 export const deploy = async (req, res) => {
   try {
     const website = await Website.findOne({
@@ -314,6 +326,9 @@ export const deploy = async (req, res) => {
 
     await website.save();
 
+    // 🟢 REDIS: Agar pehle se koi cache bacha ho toh refresh karein
+    await redis.del(`site:${website.slug}`);
+
     return res.status(200).json({
       success: true,
       message: "Website deployed successfully",
@@ -335,11 +350,24 @@ export const deploy = async (req, res) => {
   }
 };
 
-// 6. Get Deployed Website By Slug
+// 6. Get Deployed Website By Slug (Yahan sabse zyada fayda hoga)
 export const getBySlug = async (req, res) => {
   try {
+    const { slug } = req.params;
+    const cacheKey = `site:${slug}`;
+
+    // 🟢 1. Redis Cache check karo
+    const cachedSite = await redis.get(cacheKey);
+    if (cachedSite) {
+      return res.status(200).json({
+        success: true,
+        website: cachedSite,
+      });
+    }
+
+    // 2. Cache miss hone par Database se lo
     const website = await Website.findOne({
-      slug: req.params.slug,
+      slug,
       deployed: true,
     }).select("title slug latestCode deployed deployUrl");
 
@@ -349,6 +377,9 @@ export const getBySlug = async (req, res) => {
         message: "Website not found or not deployed",
       });
     }
+
+    // 🟢 3. Redis mein 24 ghante ke liye cache kar do
+    await redis.set(cacheKey, website, { ex: 24 * 60 * 60 });
 
     return res.status(200).json({
       success: true,

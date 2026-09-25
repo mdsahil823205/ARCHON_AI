@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -11,7 +10,6 @@ import {
   LayoutDashboard,
   LogOut,
   ChevronDown,
-  Plus,
   PackagePlus,
 } from "lucide-react";
 import LoginModal from "../components/LoginModal";
@@ -21,6 +19,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { setUserData } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
+import { HomeSkeleton } from "../components/HomeSkeleton"; // Skeleton import
 
 const highlightCard = [
   {
@@ -50,7 +49,8 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { userData } = useSelector((state) => state.userDetails);
+  // Redux se userData aur loading fetch kiye
+  const { userData, loading } = useSelector((state) => state.userDetails);
 
   const [openLogin, setOpenLogin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -67,6 +67,11 @@ const Home = () => {
       console.log("the error is come from frontend logout", error);
     }
   };
+
+  // Jab tak initial load ya auth verification ho raha hai, full skeleton render hoga
+  if (loading) {
+    return <HomeSkeleton />;
+  }
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
@@ -98,7 +103,10 @@ const Home = () => {
             </div>
 
             <h2 className="text-base font-semibold tracking-tight sm:text-lg">
-              Archon <span className="bg-gradient-to-r from-[var(--text-main-heading)] via-[var(--text-main-heading)] to-zinc-500 bg-clip-text text-transparent">Ai</span>
+              Archon{" "}
+              <span className="bg-gradient-to-r from-[var(--text-main-heading)] via-[var(--text-main-heading)] to-zinc-500 bg-clip-text text-transparent">
+                Ai
+              </span>
             </h2>
           </button>
 
@@ -118,14 +126,16 @@ const Home = () => {
 
             {/* Credits */}
             {userData && (
-              <div className="hidden cursor-pointer items-center gap-2 rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg)] px-3 py-2 text-sm font-medium text-[var(--text-secondary)] md:flex"
-                onClick={() => navigate("/pricing")}>
+              <div
+                className="hidden cursor-pointer items-center gap-2 rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg)] px-3 py-2 text-sm font-medium text-[var(--text-secondary)] md:flex"
+                onClick={() => navigate("/pricing")}
+              >
                 <Coins size={15} className="text-[var(--text-muted)]" />
-                <span >{userData.credits}</span>
+                <span>{userData.credits}</span>
               </div>
             )}
 
-            {/* Login */}
+            {/* Login / Profile */}
             {!userData ? (
               <motion.button
                 type="button"
@@ -137,7 +147,6 @@ const Home = () => {
               </motion.button>
             ) : (
               <div className="relative">
-                {/* Avatar */}
                 <motion.button
                   type="button"
                   whileTap={{ scale: 0.96 }}
@@ -157,8 +166,9 @@ const Home = () => {
 
                   <ChevronDown
                     size={15}
-                    className={`mr-1 hidden text-[var(--text-faint)] transition-transform duration-200 sm:block ${isOpen ? "rotate-180" : ""
-                      }`}
+                    className={`mr-1 hidden text-[var(--text-faint)] transition-transform duration-200 sm:block ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
                   />
                 </motion.button>
 
@@ -166,26 +176,13 @@ const Home = () => {
                 <AnimatePresence>
                   {isOpen && (
                     <motion.div
-                      initial={{
-                        opacity: 0,
-                        y: -8,
-                        scale: 0.97,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                        scale: 1,
-                      }}
-                      exit={{
-                        opacity: 0,
-                        y: -8,
-                        scale: 0.97,
-                      }}
+                      initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.97 }}
                       transition={{ duration: 0.16 }}
                       className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl border border-[var(--border-primary)] bg-[var(--dropdown-bg)] shadow-2xl"
                       style={{ boxShadow: "var(--dropdown-shadow)" }}
                     >
-                      {/* User Info */}
                       <div className="border-b border-[var(--divider)] p-4">
                         <div className="flex items-center gap-3">
                           <img
@@ -203,7 +200,6 @@ const Home = () => {
                             <p className="truncate text-sm font-semibold text-[var(--text-primary)]">
                               {userData.name}
                             </p>
-
                             <p className="truncate text-xs text-[var(--text-faint)]">
                               {userData.email}
                             </p>
@@ -213,15 +209,19 @@ const Home = () => {
 
                       {/* Credits - Mobile */}
                       <div className="p-3 md:hidden">
-                        <div className="flex items-center justify-between rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg)] px-3 py-2.5">
-                          <div className="flex items-center gap-2" onClick={() => navigate("/pricing")}>
-                            <Coins size={15} className="text-[var(--text-muted)]" />
-
+                        <div
+                          className="flex cursor-pointer items-center justify-between rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg)] px-3 py-2.5"
+                          onClick={() => navigate("/pricing")}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Coins
+                              size={15}
+                              className="text-[var(--text-muted)]"
+                            />
                             <span className="text-xs text-[var(--text-muted)]">
                               Available Credits
                             </span>
                           </div>
-
                           <span className="text-sm font-semibold text-[var(--text-primary)]">
                             {userData.credits}
                           </span>
@@ -279,9 +279,7 @@ const Home = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.4,
-            }}
+            transition={{ duration: 0.4 }}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--badge-border)] bg-[var(--badge-bg)] px-3.5 py-2 text-xs text-[var(--badge-text)] sm:text-sm"
           >
             <Sparkles size={14} />
@@ -299,7 +297,9 @@ const Home = () => {
             className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--text-primary)] sm:text-5xl md:text-6xl lg:text-7xl"
           >
             Build websites
-            <span className="block bg-gradient-to-r from-[var(--text-main-heading)] via-[var(--text-main-heading)] to-zinc-500 bg-clip-text text-transparent">with AI</span>
+            <span className="block bg-gradient-to-r from-[var(--text-main-heading)] via-[var(--text-main-heading)] to-zinc-500 bg-clip-text text-transparent">
+              with AI
+            </span>
           </motion.h1>
 
           {/* Description */}
@@ -312,8 +312,8 @@ const Home = () => {
             }}
             className="mt-6 max-w-2xl text-sm leading-6 text-[var(--text-muted)] sm:text-base sm:leading-7 md:text-lg"
           >
-            Describe your idea and let ArchonAi create a modern,
-            responsive website with the features you need.
+            Describe your idea and let ArchonAi create a modern, responsive
+            website with the features you need.
           </motion.p>
 
           {/* CTA */}
@@ -331,7 +331,6 @@ const Home = () => {
               className="group mt-8 flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--btn-primary-bg)] px-6 py-3 text-sm font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] sm:px-7 sm:py-3.5 sm:text-base"
             >
               Go To Dashboard
-
               <ArrowRight
                 size={17}
                 className="transition-transform duration-200 group-hover:translate-x-1"
@@ -351,7 +350,6 @@ const Home = () => {
               className="group mt-8 flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--btn-primary-bg)] px-6 py-3 text-sm font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] sm:px-7 sm:py-3.5 sm:text-base"
             >
               Get Started
-
               <ArrowRight
                 size={17}
                 className="transition-transform duration-200 group-hover:translate-x-1"
@@ -370,30 +368,20 @@ const Home = () => {
             return (
               <motion.div
                 key={card.id}
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{
                   delay: 0.35 + index * 0.08,
                   duration: 0.4,
                 }}
-                whileHover={{
-                  y: -3,
-                }}
+                whileHover={{ y: -3 }}
                 className="group rounded-xl border border-[var(--border-primary)] bg-[var(--bg-card)] p-5 transition-colors duration-200 hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)] sm:p-6"
                 style={{ boxShadow: "var(--card-shadow)" }}
               >
-                {/* Icon */}
                 <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border-primary)] bg-[var(--hover-bg)] text-[var(--text-muted)] transition-colors duration-200 group-hover:bg-[var(--hover-bg-strong)] group-hover:text-[var(--text-primary)]">
                   <Icon size={19} />
                 </div>
 
-                {/* Content */}
                 <h2 className="text-base font-semibold tracking-tight text-[var(--text-primary)] sm:text-lg">
                   {card.title}
                 </h2>
@@ -418,10 +406,7 @@ const Home = () => {
           LOGIN MODAL
       ====================================================== */}
       {openLogin && (
-        <LoginModal
-          open={openLogin}
-          onClose={() => setOpenLogin(false)}
-        />
+        <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />
       )}
     </div>
   );
