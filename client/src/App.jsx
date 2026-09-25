@@ -11,7 +11,7 @@ import Pricing from "./pages/Pricing";
 
 export const serverUrl = import.meta.env.DEV
   ? "http://localhost:3000"
-  : "https://archonaibuilder.vercel.app";
+  : "";
 
 // Reusable Auth Guard
 const ProtectedRoute = ({ children }) => {
